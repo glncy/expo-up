@@ -1,6 +1,6 @@
 {
   "name": "expo-up",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "CLI Tool for Custom Expo Update",
   "type": "module",
   "author": "glncy",
@@ -9,6 +9,11 @@
   "scripts": {
     "build": "rimraf dist && tsc && uglifyjs-folder dist -e -x .js -o dist && chmod +x dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glncy/expo-up.git"
+  },
+  "homepage": "https://github.com/glncy/expo-up",
   "devDependencies": {
     "@types/archiver": "^6.0.2",
     "@types/figlet": "^1.5.8",

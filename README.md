@@ -42,6 +42,7 @@ module.exports = {
         "x-expo-updates-key": EXPO_UPDATES_KEY,
       },
     },
+    runtimeVersion: { policy: "appVersion" },
     // ...
   },
 };
