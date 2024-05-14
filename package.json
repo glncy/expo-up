@@ -1,6 +1,6 @@
 {
   "name": "expo-up",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI Tool for Custom Expo Update",
   "type": "module",
   "author": "glncy",

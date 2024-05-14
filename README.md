@@ -84,6 +84,17 @@ expo-up rollback --platform [android|ios] --token <your-custom-server-auth-token
 expo-up rollback --platform [android|ios] --token <your-custom-server-auth-token> --embedded
 ```
 
+```bash
+# Release a new update
+expo-up release --platform [android|ios] --token <your-custom-server-auth-token>
+
+# Rollback to the previous release
+expo-up rollback --platform [android|ios] --token <your-custom-server-auth-token>
+
+# Rollback to embedded release
+expo-up rollback --platform [android|ios] --token <your-custom-server-auth-token> --embedded
+```
+
 ## Multiple Environments
 
 If you have multiple Environments (e.g. Development, Staging, Production), create one key for each Environment and set the `EXPO_UPDATES_KEY` environment variable in your `.env` file:
