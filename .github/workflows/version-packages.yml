@@ -15,15 +15,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Detect changeset and prerelease status
+        id: detect
+        uses: ./.github/actions/detect-pending-changesets
+
       - name: Setup Node
+        if: steps.detect.outputs.in_pre_mode != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Setup workspace
+        if: steps.detect.outputs.in_pre_mode != 'true'
         uses: ./.github/actions/setup-bun
 
       - name: Create version PR with Changesets
+        if: steps.detect.outputs.in_pre_mode != 'true'
         uses: changesets/action@v1
         with:
           version: bun run version-packages
@@ -31,3 +38,7 @@ jobs:
           commit: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip version PR in prerelease mode
+        if: steps.detect.outputs.in_pre_mode == 'true'
+        run: echo "Skipping version PR because prerelease mode is active with tag '${{ steps.detect.outputs.pre_tag }}'."

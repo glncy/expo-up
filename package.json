@@ -17,9 +17,12 @@
     "cf-typegen": "turbo run cf-typegen --filter=example-hono-cf-worker",
     "changeset": "changeset",
     "version-packages": "changeset version",
+    "pre:enter:next": "changeset pre enter next",
+    "pre:enter:rc": "changeset pre enter rc",
+    "pre:exit": "changeset pre exit",
     "release": "changeset publish",
-    "release:next": "changeset pre enter next && changeset version && changeset publish && changeset pre exit",
-    "release:rc": "changeset pre enter rc && changeset version && changeset publish && changeset pre exit"
+    "release:next": "changeset version && changeset publish",
+    "release:rc": "changeset version && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.6",

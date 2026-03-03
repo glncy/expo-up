@@ -1,6 +1,7 @@
 # Release Flow (PR -> next -> rc -> latest)
 
 This repo uses **Changesets + GitHub Actions + npm dist-tags**.
+The repo follows the standard **persistent prerelease mode** pattern for `next` and `rc`.
 
 ## Dist-tag naming
 
@@ -29,26 +30,28 @@ bun run changeset
 
 Commit the generated file under `.changeset/`.
 
-### 2) Merge to `main` (publish `next` snapshots)
+### 2) Merge to `main` (publish `next` prereleases)
 
 Workflow: `.github/workflows/publish.yml` (`push` on `main`)
 
 1. Build runs first.
 2. Test, lint, and type-check run in parallel.
-3. If checks pass, snapshot versions are generated and published with `next` tag:
+3. If checks pass, versions are generated and published:
 
 ```bash
 bun run release:next
 ```
 
-Result: npm gets preview installs like:
+Result: npm gets prerelease installs like:
 
 ```bash
 npm i @expo-up/cli@next @expo-up/server@next @expo-up/core@next
 ```
 
 Note:
-- `next` publish is skipped automatically when there are no pending `.changeset/*.md` files.
+- `next` publish runs only when:
+  - pending `.changeset/*.md` files exist
+  - prerelease mode is active with tag `next`
 - This prevents no-op attempts to republish already published versions.
 
 ### 3) Version PR (prepare stable versions)
@@ -68,6 +71,7 @@ Important:
 - This PR is for the **stable/latest** release path.
 - You usually **do not merge it immediately** if you are still validating on `next`/`rc`.
 - Merge this PR only when you are ready to ship stable `latest`.
+- During prerelease mode (`next` or `rc`), this workflow is skipped.
 
 ### 4) RC release (GitHub pre-release)
 
@@ -86,7 +90,9 @@ npm i @expo-up/cli@rc @expo-up/server@rc @expo-up/core@rc
 ```
 
 Note:
-- `rc` publish is skipped automatically when there are no pending `.changeset/*.md` files.
+- `rc` publish runs only when:
+  - pending `.changeset/*.md` files exist
+  - prerelease mode is active with tag `rc`
 
 ### 5) Latest release (GitHub release)
 
@@ -116,12 +122,33 @@ This keeps versions synchronized without manually selecting packages in CI.
 
 ## Practical team workflow
 
-1. Open PR with code changes.
-2. Add a changeset (`bun run changeset`) for any publishable package change.
-3. Merge PR to `main` -> `next` prereleases are published.
-4. (Optional) Create GitHub **pre-release** to publish/install `rc` for final validation.
-5. When ready for stable, merge `chore: version packages` PR.
-6. Manually create GitHub **release** (tag) to publish `latest`.
+1. Enter `next` prerelease mode once:
+```bash
+bun run pre:enter:next
+git add .changeset/pre.json
+git commit -m "chore: enter next prerelease mode"
+git push
+```
+2. Open PR with code changes.
+3. Add a changeset (`bun run changeset`) for any publishable package change.
+4. Merge PR to `main` -> publishes `-next.0`, `-next.1`, `-next.2`, etc.
+5. When moving to RC, switch prerelease tag:
+```bash
+bun run pre:enter:rc
+git add .changeset/pre.json
+git commit -m "chore: switch to rc prerelease mode"
+git push
+```
+6. Create GitHub **pre-release** to publish/install `rc`.
+7. When ready for stable:
+```bash
+bun run pre:exit
+git add .changeset/pre.json
+git commit -m "chore: exit prerelease mode"
+git push
+```
+8. Merge `chore: version packages` PR.
+9. Manually create GitHub **release** (tag) to publish `latest`.
 
 ## Publish authentication
 

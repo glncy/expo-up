@@ -76,6 +76,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       has_pending_changesets: ${{ steps.detect.outputs.has_pending_changesets }}
+      in_pre_mode: ${{ steps.detect.outputs.in_pre_mode }}
+      pre_tag: ${{ steps.detect.outputs.pre_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,7 +88,7 @@ jobs:
 
   publish-next:
     name: Publish Next (main)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.detect-pending-changesets.outputs.has_pending_changesets == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.detect-pending-changesets.outputs.has_pending_changesets == 'true' && needs.detect-pending-changesets.outputs.pre_tag == 'next'
     runs-on: ubuntu-latest
     needs:
       - test-main
@@ -130,7 +132,7 @@ jobs:
         uses: ./.github/actions/detect-pending-changesets
 
       - name: Publish rc prerelease versions from changesets
-        if: steps.detect.outputs.has_pending_changesets == 'true'
+        if: steps.detect.outputs.has_pending_changesets == 'true' && steps.detect.outputs.pre_tag == 'rc'
         env:
           NPM_CONFIG_PROVENANCE: "true"
           NODE_AUTH_TOKEN: ""

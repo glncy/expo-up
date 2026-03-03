@@ -1,9 +1,15 @@
 name: Detect Pending Changesets
-description: Detect whether pending changeset markdown files exist.
+description: Detect pending changeset files and prerelease mode/tag status.
 outputs:
   has_pending_changesets:
     description: "true when pending .changeset/*.md files exist (excluding README.md)"
     value: ${{ steps.detect.outputs.has_pending_changesets }}
+  in_pre_mode:
+    description: "true when .changeset/pre.json exists and mode is pre"
+    value: ${{ steps.detect.outputs.in_pre_mode }}
+  pre_tag:
+    description: "current prerelease tag from .changeset/pre.json (for example: next, rc)"
+    value: ${{ steps.detect.outputs.pre_tag }}
 runs:
   using: composite
   steps:
@@ -19,4 +25,21 @@ runs:
         else
           echo "has_pending_changesets=false" >> "$GITHUB_OUTPUT"
           echo "No pending changeset files found."
+        fi
+
+        if [ -f .changeset/pre.json ]; then
+          pre_tag=$(node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('.changeset/pre.json','utf8')); if (data.mode==='pre' && typeof data.tag === 'string') process.stdout.write(data.tag);")
+          if [ -n "$pre_tag" ]; then
+            echo "in_pre_mode=true" >> "$GITHUB_OUTPUT"
+            echo "pre_tag=$pre_tag" >> "$GITHUB_OUTPUT"
+            echo "Prerelease mode is active with tag: $pre_tag"
+          else
+            echo "in_pre_mode=false" >> "$GITHUB_OUTPUT"
+            echo "pre_tag=" >> "$GITHUB_OUTPUT"
+            echo "pre.json exists but prerelease mode is not active."
+          fi
+        else
+          echo "in_pre_mode=false" >> "$GITHUB_OUTPUT"
+          echo "pre_tag=" >> "$GITHUB_OUTPUT"
+          echo "No pre.json found; prerelease mode is inactive."
         fi
