@@ -1,5 +1,18 @@
 # @expo-up/server
 
+## 0.1.3
+
+### Patch Changes
+
+- f118f45: Bump to v0.1.3-next.1
+- 4784685: Bump to v0.1.3
+- 41c7576: Bump to v0.1.3-next.1
+- 13bd440: Bump to v0.1.3-next.2
+- Updated dependencies [f118f45]
+- Updated dependencies [4784685]
+- Updated dependencies [41c7576]
+  - @expo-up/core@0.1.3
+
 ## 0.1.3-next.2
 
 ### Patch Changes
