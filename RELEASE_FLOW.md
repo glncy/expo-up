@@ -130,6 +130,13 @@ This keeps versions synchronized without manually selecting packages in CI.
 
 1. Enter `next` prerelease mode once:
 ```bash
+## If you are currently in another prerelease mode (for example `rc`), exit first:
+bun run pre:exit
+git add .changeset/pre.json
+git commit -m "chore: exit current prerelease mode"
+git push
+
+## Then enter `next`:
 bun run pre:enter:next
 git add .changeset/pre.json
 git commit -m "chore: enter next prerelease mode"
@@ -140,6 +147,11 @@ git push
 4. Merge PR to `main` -> publishes `-next.0`, `-next.1`, `-next.2`, etc.
 5. When moving to RC, switch prerelease tag:
 ```bash
+bun run pre:exit
+git add .changeset/pre.json
+git commit -m "chore: exit next prerelease mode"
+git push
+
 bun run pre:enter:rc
 git add .changeset/pre.json
 git commit -m "chore: switch to rc prerelease mode"
@@ -156,10 +168,43 @@ git push
 8. Merge `chore: version packages` PR.
 9. Manually create GitHub **release** (tag) to publish `latest`.
 
+## Publishing on `next` (detailed)
+
+Checklist:
+- Repository is in prerelease mode with tag `next` (`.changeset/pre.json` has `"mode": "pre"` and `"tag": "next"`).
+- At least one **new/unconsumed** changeset file exists in `.changeset/*.md` (excluding `README.md`).
+- Changes are merged to `main` (the `next` publish job runs on `push` to `main`).
+
+What CI does for `next`:
+1. Build + test + lint + type-check on `main`.
+2. Detect pending unconsumed changesets for `next`.
+3. Run `changeset version`.
+4. Commit and push prerelease version updates to `main` (`[skip ci]`).
+5. Run `changeset publish` (publishes to npm `next` dist-tag).
+
+Common reasons `next` does not publish:
+- You are in `rc` mode (or not in pre mode) instead of `next`.
+- No new changeset was added since the last prerelease publish.
+- The push was not on `main`.
+- npm/trusted-publishing/auth issue in workflow.
+
+Quick verification commands:
+```bash
+cat .changeset/pre.json
+ls .changeset/*.md
+```
+
 ## Example: Prepare `v2.0.0` from current `v1.0.0`
 
 1. Start prerelease stream for the upcoming minor/patch:
 ```bash
+## If you are currently in another prerelease mode (for example `rc`), exit first:
+bun run pre:exit
+git add .changeset/pre.json
+git commit -m "chore: exit current prerelease mode for 2.0.0"
+git push
+
+## Then enter `next`:
 bun run pre:enter:next
 git add .changeset/pre.json
 git commit -m "chore: enter next prerelease mode for 2.0.0"
@@ -175,6 +220,11 @@ npm i @expo-up/cli@next @expo-up/core@next @expo-up/server@next
 ```
 4. When ready for release candidate, switch to RC stream:
 ```bash
+bun run pre:exit
+git add .changeset/pre.json
+git commit -m "chore: exit next prerelease mode for 2.0.0"
+git push
+
 bun run pre:enter:rc
 git add .changeset/pre.json
 git commit -m "chore: switch to rc prerelease mode for 2.0.0"
