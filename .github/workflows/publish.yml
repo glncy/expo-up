@@ -90,7 +90,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
 
       - name: Setup workspace
         uses: ./.github/actions/setup-bun
@@ -101,6 +100,7 @@ jobs:
       - name: Publish snapshot next versions from changesets
         env:
           NPM_CONFIG_PROVENANCE: "true"
+          NODE_AUTH_TOKEN: ""
         run: bun run release:next
 
   publish-rc:
@@ -119,7 +119,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
 
       - name: Setup workspace
         uses: ./.github/actions/setup-bun
@@ -130,6 +129,7 @@ jobs:
       - name: Publish snapshot rc versions from changesets
         env:
           NPM_CONFIG_PROVENANCE: "true"
+          NODE_AUTH_TOKEN: ""
         run: bun run release:rc
 
   publish-latest:
@@ -148,7 +148,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
 
       - name: Setup workspace
         uses: ./.github/actions/setup-bun
@@ -159,4 +158,5 @@ jobs:
       - name: Publish latest from versioned packages
         env:
           NPM_CONFIG_PROVENANCE: "true"
+          NODE_AUTH_TOKEN: ""
         run: bun run release
