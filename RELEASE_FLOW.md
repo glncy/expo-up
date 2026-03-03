@@ -52,6 +52,8 @@ Note:
 - `next` publish runs only when:
   - pending `.changeset/*.md` files exist
   - prerelease mode is active with tag `next`
+- CI persists prerelease version updates to `main` before publish.
+- This enables monotonic prerelease increments (`next.0`, `next.1`, `next.2`, ...).
 - This prevents no-op attempts to republish already published versions.
 
 ### 3) Version PR (prepare stable versions)
@@ -93,6 +95,8 @@ Note:
 - `rc` publish runs only when:
   - pending `.changeset/*.md` files exist
   - prerelease mode is active with tag `rc`
+- CI persists prerelease version updates to `main` before publish.
+- This enables monotonic prerelease increments (`rc.0`, `rc.1`, `rc.2`, ...).
 
 ### 5) Latest release (GitHub release)
 

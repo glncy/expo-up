@@ -21,8 +21,8 @@
     "pre:enter:rc": "changeset pre enter rc",
     "pre:exit": "changeset pre exit",
     "release": "changeset publish",
-    "release:next": "changeset version && changeset publish",
-    "release:rc": "changeset version && changeset publish"
+    "release:next": "changeset publish",
+    "release:rc": "changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
