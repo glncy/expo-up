@@ -7,5 +7,9 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@expo-up/typescript-config"]
+  "ignore": [
+    "@expo-up/typescript-config",
+    "example-expo-app",
+    "example-hono-cf-worker"
+  ]
 }
