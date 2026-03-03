@@ -43,7 +43,20 @@
   "devDependencies": {
     "@expo-up/cli": "workspace:*",
     "@types/react": "~19.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "eslint": "^8.57.0",
+    "eslint-config-expo": "~55.0.0",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-expo": "^1.0.0",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^16.0.0",
     "typescript": "~5.9.2"
+  },
+  "eslintConfig": {
+    "extends": "expo"
   },
   "private": true
 }

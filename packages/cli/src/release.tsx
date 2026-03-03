@@ -146,7 +146,8 @@ export const Release: React.FC<ReleaseProps> = ({
 
         const metadata = readJsonFile<unknown>(metadataPath);
         const sortedMetadataHash = createSortedMetadataHash(metadata);
-        if (debug) appendDebug(`Local sorted metadata hash: ${sortedMetadataHash}`);
+        if (debug)
+          appendDebug(`Local sorted metadata hash: ${sortedMetadataHash}`);
 
         const appConfig = getConfig(process.cwd());
         fs.writeFileSync(

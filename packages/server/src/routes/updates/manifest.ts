@@ -117,10 +117,7 @@ export function registerManifestRoute(
           UUID_NAMESPACE,
         );
 
-        if (
-          currentUpdateId === rollbackId &&
-          protocolVersion === 1
-        ) {
+        if (currentUpdateId === rollbackId && protocolVersion === 1) {
           logger.debug?.(
             "Manifest request already up-to-date (embedded rollback)",
             buildLogContext(c, options, {
@@ -212,10 +209,7 @@ export function registerManifestRoute(
         UUID_NAMESPACE,
       );
 
-      if (
-        currentUpdateId === updateId &&
-        protocolVersion === 1
-      ) {
+      if (currentUpdateId === updateId && protocolVersion === 1) {
         logger.debug?.(
           "Manifest request already up-to-date",
           buildLogContext(c, options, {
