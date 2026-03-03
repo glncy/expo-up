@@ -1,5 +1,13 @@
 # @expo-up/cli
 
+## 0.1.3-next.1
+
+### Patch Changes
+
+- 41c7576: Bump to v0.1.3-next.1
+- Updated dependencies [41c7576]
+  - @expo-up/core@0.1.3-next.1
+
 ## 0.1.3-next.0
 
 ### Patch Changes
