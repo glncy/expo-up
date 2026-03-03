@@ -1,5 +1,13 @@
 # @expo-up/server
 
+## 0.1.2
+
+### Patch Changes
+
+- 37a6319: chore: patch release across core, server, and cli
+- Updated dependencies [37a6319]
+  - @expo-up/core@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
