@@ -101,7 +101,7 @@ jobs:
       - name: Build publishable packages
         run: bun run build:packages
 
-      - name: Publish snapshot next versions from changesets
+      - name: Publish next prerelease versions from changesets
         env:
           NPM_CONFIG_PROVENANCE: "true"
           NODE_AUTH_TOKEN: ""
@@ -134,7 +134,7 @@ jobs:
       - name: Build publishable packages
         run: bun run build:packages
 
-      - name: Publish snapshot rc versions from changesets
+      - name: Publish rc prerelease versions from changesets
         env:
           NPM_CONFIG_PROVENANCE: "true"
           NODE_AUTH_TOKEN: ""
