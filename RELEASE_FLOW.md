@@ -60,6 +60,11 @@ That PR contains:
 - changelog updates
 - dependency bumps between internal packages (for example, if `core` changed)
 
+Important:
+- This PR is for the **stable/latest** release path.
+- You usually **do not merge it immediately** if you are still validating on `next`/`rc`.
+- Merge this PR only when you are ready to ship stable `latest`.
+
 ### 4) RC release (GitHub pre-release)
 
 Workflow: `.github/workflows/publish.yml` (`release.published` + prerelease=true)
@@ -88,6 +93,9 @@ bun run release
 
 Result: stable versions are published to `latest`.
 
+Prerequisite for stable:
+- Merge the `chore: version packages` PR first, then publish stable release.
+
 ## How package selection works
 
 Changesets decides what to version/publish from committed changesets:
@@ -102,10 +110,10 @@ This keeps versions synchronized without manually selecting packages in CI.
 
 1. Open PR with code changes.
 2. Add a changeset (`bun run changeset`) for any publishable package change.
-3. Merge PR to `main` -> `next` snapshots are published.
-4. Wait for/merge `chore: version packages` PR.
-5. Create GitHub **pre-release** if you want RC verification.
-6. Create GitHub **release** when ready for production (`latest`).
+3. Merge PR to `main` -> `next` prereleases are published.
+4. (Optional) Create GitHub **pre-release** to publish/install `rc` for final validation.
+5. When ready for stable, merge `chore: version packages` PR.
+6. Create GitHub **release** to publish `latest`.
 
 ## Publish authentication
 
