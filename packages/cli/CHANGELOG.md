@@ -1,5 +1,11 @@
 # @expo-up/cli
 
+## 0.1.3-next.2
+
+### Patch Changes
+
+- 13bd440: Bump to v0.1.3-next.2
+
 ## 0.1.3-next.1
 
 ### Patch Changes
