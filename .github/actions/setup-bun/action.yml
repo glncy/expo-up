@@ -19,10 +19,11 @@ runs:
         path: |
           .turbo
           ~/.bun/install/cache
-        key: ${{ runner.os }}-turbo-${{ github.workflow }}-${{ github.ref }}-${{ hashFiles('bun.lock', 'turbo.json', 'package.json', 'packages/**/package.json', 'apps/**/package.json') }}
+        key: ${{ runner.os }}-turbo-${{ github.ref }}-${{ hashFiles('bun.lock', 'turbo.json', 'package.json', 'packages/**/package.json', 'apps/**/package.json') }}
         restore-keys: |
-          ${{ runner.os }}-turbo-${{ github.workflow }}-${{ github.ref }}-
-          ${{ runner.os }}-turbo-${{ github.workflow }}-
+          ${{ runner.os }}-turbo-${{ github.ref }}-
+          ${{ runner.os }}-turbo-refs/heads/main-
+          ${{ runner.os }}-turbo-
 
     - name: Install dependencies
       shell: bash
