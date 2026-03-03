@@ -8,5 +8,8 @@
     "@expo-up/server": "0.1.2",
     "@expo-up/typescript-config": "0.1.0"
   },
-  "changesets": []
+  "changesets": [
+    "cold-showers-press",
+    "eighty-pens-matter"
+  ]
 }
