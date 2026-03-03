@@ -47,6 +47,10 @@ Result: npm gets preview installs like:
 npm i @expo-up/cli@next @expo-up/server@next @expo-up/core@next
 ```
 
+Note:
+- `next` publish is skipped automatically when there are no pending `.changeset/*.md` files.
+- This prevents no-op attempts to republish already published versions.
+
 ### 3) Version PR (prepare stable versions)
 
 Workflow: `.github/workflows/version-packages.yml`
@@ -81,6 +85,9 @@ Result: npm rc installs:
 npm i @expo-up/cli@rc @expo-up/server@rc @expo-up/core@rc
 ```
 
+Note:
+- `rc` publish is skipped automatically when there are no pending `.changeset/*.md` files.
+
 ### 5) Latest release (GitHub release)
 
 Workflow: `.github/workflows/publish.yml` (`release.published` + prerelease=false)
@@ -95,6 +102,7 @@ Result: stable versions are published to `latest`.
 
 Prerequisite for stable:
 - Merge the `chore: version packages` PR first, then publish stable release.
+- Stable publish is intentionally triggered manually by creating a GitHub Release/tag (recommended human gate).
 
 ## How package selection works
 
@@ -113,7 +121,7 @@ This keeps versions synchronized without manually selecting packages in CI.
 3. Merge PR to `main` -> `next` prereleases are published.
 4. (Optional) Create GitHub **pre-release** to publish/install `rc` for final validation.
 5. When ready for stable, merge `chore: version packages` PR.
-6. Create GitHub **release** to publish `latest`.
+6. Manually create GitHub **release** (tag) to publish `latest`.
 
 ## Publish authentication
 

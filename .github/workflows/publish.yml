@@ -70,14 +70,29 @@ jobs:
       - name: Run type checks
         run: bun run check-types
 
+  detect-pending-changesets:
+    name: Detect Pending Changesets (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      has_pending_changesets: ${{ steps.detect.outputs.has_pending_changesets }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect pending changesets
+        id: detect
+        uses: ./.github/actions/detect-pending-changesets
+
   publish-next:
     name: Publish Next (main)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.detect-pending-changesets.outputs.has_pending_changesets == 'true'
     runs-on: ubuntu-latest
     needs:
       - test-main
       - lint-main
       - check-types-main
+      - detect-pending-changesets
     permissions:
       contents: read
       id-token: write
@@ -86,20 +101,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-
-      - name: Upgrade npm for trusted publishing
-        run: npm install -g npm@latest
-
-      - name: Setup workspace
-        uses: ./.github/actions/setup-bun
-
-      - name: Build publishable packages
-        run: bun run build:packages
+      - name: Setup publish workspace
+        uses: ./.github/actions/setup-publish
 
       - name: Publish next prerelease versions from changesets
         env:
@@ -119,22 +122,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
+      - name: Setup publish workspace
+        uses: ./.github/actions/setup-publish
 
-      - name: Upgrade npm for trusted publishing
-        run: npm install -g npm@latest
-
-      - name: Setup workspace
-        uses: ./.github/actions/setup-bun
-
-      - name: Build publishable packages
-        run: bun run build:packages
+      - name: Detect pending changesets
+        id: detect
+        uses: ./.github/actions/detect-pending-changesets
 
       - name: Publish rc prerelease versions from changesets
+        if: steps.detect.outputs.has_pending_changesets == 'true'
         env:
           NPM_CONFIG_PROVENANCE: "true"
           NODE_AUTH_TOKEN: ""
@@ -152,20 +148,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-
-      - name: Upgrade npm for trusted publishing
-        run: npm install -g npm@latest
-
-      - name: Setup workspace
-        uses: ./.github/actions/setup-bun
-
-      - name: Build publishable packages
-        run: bun run build:packages
+      - name: Setup publish workspace
+        uses: ./.github/actions/setup-publish
 
       - name: Publish latest from versioned packages
         env:

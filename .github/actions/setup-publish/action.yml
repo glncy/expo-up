@@ -1,0 +1,26 @@
+name: Setup Publish Workspace
+description: Setup Node for npm publishing, upgrade npm, setup Bun workspace, and build publishable packages.
+inputs:
+  node-version:
+    description: Node.js version to use
+    required: false
+    default: "20"
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://registry.npmjs.org
+
+    - name: Upgrade npm for trusted publishing
+      shell: bash
+      run: npm install -g npm@latest
+
+    - name: Setup workspace
+      uses: ./.github/actions/setup-bun
+
+    - name: Build publishable packages
+      shell: bash
+      run: bun run build:packages
