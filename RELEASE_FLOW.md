@@ -107,9 +107,11 @@ This keeps versions synchronized without manually selecting packages in CI.
 5. Create GitHub **pre-release** if you want RC verification.
 6. Create GitHub **release** when ready for production (`latest`).
 
-## Required secrets
+## Publish authentication
 
-- `NPM_TOKEN`: npm token with publish permission for `@expo-up/*`
+- Uses npm Trusted Publishing (OIDC), not long-lived npm tokens.
+- Ensure npm trusted publisher is configured for this repo/workflow.
+- Publish jobs use GitHub Actions `id-token: write` permission.
 
 ## Optional naming alternatives
 

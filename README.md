@@ -301,9 +301,11 @@ Publish order is always:
 2. `@expo-up/server`
 3. `@expo-up/cli`
 
-### Required GitHub Secrets
+### Publish Auth (Trusted Publishing)
 
-- `NPM_TOKEN`: npm token with publish permission for `@expo-up/*`
+- No `NPM_TOKEN` secret required for publish jobs.
+- Configure npm Trusted Publishing for this repository/workflow.
+- Publish jobs require `id-token: write` permission (already configured).
 
 ## Notes
 
