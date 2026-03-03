@@ -253,10 +253,57 @@ In app UI:
 ## Publish
 
 ```bash
-cd packages/core && npm publish --access public
-cd ../server && npm publish --access public
-cd ../cli && npm publish --access public
+bun run changeset
+bun run version-packages
+bun run release
 ```
+
+## Release Guide
+
+- Full release lifecycle guide: [`RELEASE_FLOW.md`](./RELEASE_FLOW.md)
+
+## CI/CD Pipelines
+
+### PR Pipeline
+
+Workflow: `.github/workflows/pr-quality.yml`
+
+On every pull request:
+1. `build` runs first
+2. `test`, `lint`, and `check-types` run in parallel after build passes
+3. Bun + Turbo caches are restored/saved for faster subsequent runs
+
+### Publish Pipeline
+
+Workflow: `.github/workflows/publish.yml`
+
+- On merge to `main` (`push` to main):
+  - runs `build` first
+  - runs `test`, `lint`, `check-types` in parallel
+  - publishes snapshot prereleases with `next` tag via Changesets
+  - snapshot versions are generated from pending changesets
+- On GitHub Release marked **Pre-release**:
+  - publishes snapshot prereleases with `rc` dist-tag via Changesets
+- On GitHub Release marked **Release** (not prerelease):
+  - publishes versioned packages as `latest` via Changesets
+
+### Version PR Pipeline
+
+Workflow: `.github/workflows/version-packages.yml`
+
+- On push to `main`, Changesets action creates/updates a version PR:
+  - commit message: `chore: version packages`
+  - PR title: `chore: version packages`
+- When that PR is merged, package.json versions/changelogs are synced in the repo.
+
+Publish order is always:
+1. `@expo-up/core`
+2. `@expo-up/server`
+3. `@expo-up/cli`
+
+### Required GitHub Secrets
+
+- `NPM_TOKEN`: npm token with publish permission for `@expo-up/*`
 
 ## Notes
 

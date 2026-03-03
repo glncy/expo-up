@@ -14,9 +14,15 @@
     "test:packages": "turbo run test --filter=@expo-up/cli --filter=@expo-up/core --filter=@expo-up/server",
     "quality": "turbo run quality",
     "quality:packages": "turbo run quality --filter=@expo-up/cli --filter=@expo-up/core --filter=@expo-up/server",
-    "cf-typegen": "turbo run cf-typegen --filter=example-hono-cf-worker"
+    "cf-typegen": "turbo run cf-typegen --filter=example-hono-cf-worker",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish",
+    "release:next": "changeset version --snapshot next && changeset publish --tag next",
+    "release:rc": "changeset version --snapshot rc && changeset publish --tag rc"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.6",
     "prettier": "^3.7.4",
     "turbo": "^2.8.11",
     "typescript": "5.9.2"
