@@ -306,7 +306,9 @@ program
 
 program
   .command("codesigning:configure")
-  .description("Configure Expo config codeSigning fields from existing cert/key")
+  .description(
+    "Configure Expo config codeSigning fields from existing cert/key",
+  )
   .option(
     "-p, --project-root <path>",
     "Expo app root containing app.json or app.config.* (defaults to auto-detect)",

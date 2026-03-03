@@ -1,6 +1,8 @@
 [submodule "packages/v0-expo-up"]
 	path = packages/v0-expo-up
 	url = https://github.com/glncy/v0-expo-up
+	ignore = all
 [submodule "packages/v0-expo-up-server"]
 	path = packages/v0-expo-up-server
 	url = https://github.com/glncy/v0-expo-up-server
+	ignore = all

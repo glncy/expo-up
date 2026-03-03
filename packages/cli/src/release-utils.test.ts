@@ -193,7 +193,9 @@ describe("createSortedMetadataHash", () => {
       },
     };
 
-    expect(createSortedMetadataHash(first)).toBe(createSortedMetadataHash(second));
+    expect(createSortedMetadataHash(first)).toBe(
+      createSortedMetadataHash(second),
+    );
   });
 
   it("changes when metadata content changes", () => {

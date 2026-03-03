@@ -1,0 +1,34 @@
+name: Version Packages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  version-packages:
+    name: Create/Update Version PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Create version PR with Changesets
+        uses: changesets/action@v1
+        with:
+          version: bun run version-packages
+          title: "chore: version packages"
+          commit: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

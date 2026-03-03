@@ -1,0 +1,159 @@
+name: Publish Packages
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-main:
+    name: Build (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Build workspace
+        run: bun run build
+
+  test-main:
+    name: Test (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build-main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Run tests
+        run: bun run test
+
+  lint-main:
+    name: Lint (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build-main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Run lint
+        run: bun run lint
+
+  check-types-main:
+    name: Check Types (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build-main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Run type checks
+        run: bun run check-types
+
+  publish-next:
+    name: Publish Next (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs:
+      - test-main
+      - lint-main
+      - check-types-main
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Build publishable packages
+        run: bun run build:packages
+
+      - name: Publish snapshot next versions from changesets
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+        run: bun run release:next
+
+  publish-rc:
+    name: Publish RC (prerelease)
+    if: github.event_name == 'release' && github.event.release.prerelease == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Build publishable packages
+        run: bun run build:packages
+
+      - name: Publish snapshot rc versions from changesets
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+        run: bun run release:rc
+
+  publish-latest:
+    name: Publish Latest (release)
+    if: github.event_name == 'release' && github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-bun
+
+      - name: Build publishable packages
+        run: bun run build:packages
+
+      - name: Publish latest from versioned packages
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+        run: bun run release
