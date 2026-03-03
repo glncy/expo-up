@@ -5,8 +5,8 @@ The repo follows the standard **persistent prerelease mode** pattern for `next` 
 
 ## Dist-tag naming
 
-- `next`: snapshot builds from `main` (continuous integration releases)
-- `rc`: snapshot builds for a GitHub **pre-release**
+- `next`: prerelease builds from `main` (continuous integration releases)
+- `rc`: release-candidate prerelease builds for a GitHub **pre-release**
 - `latest`: stable production release
 
 These are standard and good names in npm ecosystems.
@@ -53,6 +53,7 @@ Note:
   - pending `.changeset/*.md` files exist
   - prerelease mode is active with tag `next`
 - CI persists prerelease version updates to `main` before publish.
+- Prerelease version updates are committed directly to `main` by GitHub Actions (`[skip ci]`), not via a version PR.
 - This enables monotonic prerelease increments (`next.0`, `next.1`, `next.2`, ...).
 - This prevents no-op attempts to republish already published versions.
 
@@ -96,6 +97,7 @@ Note:
   - pending `.changeset/*.md` files exist
   - prerelease mode is active with tag `rc`
 - CI persists prerelease version updates to `main` before publish.
+- Prerelease version updates are committed directly to `main` by GitHub Actions (`[skip ci]`), not via a version PR.
 - This enables monotonic prerelease increments (`rc.0`, `rc.1`, `rc.2`, ...).
 
 ### 5) Latest release (GitHub release)
