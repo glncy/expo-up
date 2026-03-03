@@ -1,0 +1,18 @@
+{
+  "name": "example-hono-cf-worker",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "@expo-up/server": "workspace:*",
+    "@hono/oauth-providers": "^0.8.5",
+    "@octokit/rest": "^22.0.1",
+    "hono": "^4.12.3"
+  },
+  "devDependencies": {
+    "wrangler": "^4.4.0"
+  }
+}

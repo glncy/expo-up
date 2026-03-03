@@ -1,0 +1,41 @@
+{
+  "name": "@expo-up/server",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/server/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/server/src/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm && tsc --emitDeclarationOnly && cp ./dist/server/src/index.d.ts ./dist/index.d.ts && cp ./dist/server/src/index.d.ts.map ./dist/index.d.ts.map && cp ./dist/server/src/types.d.ts ./dist/types.d.ts && cp ./dist/server/src/types.d.ts.map ./dist/types.d.ts.map && cp ./dist/server/src/app-types.d.ts ./dist/app-types.d.ts && cp ./dist/server/src/app-types.d.ts.map ./dist/app-types.d.ts.map",
+    "dev": "bun build ./src/index.ts --outdir ./dist --target node --format esm --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "prettier --check \"src/**/*.ts\"",
+    "test": "bun test",
+    "quality": "bun run lint && bun run check-types && bun run test"
+  },
+  "dependencies": {
+    "@hono/oauth-providers": "^0.8.5",
+    "@octokit/core": "^7.0.6",
+    "hono": "^4.12.3",
+    "jszip": "^3.10.1",
+    "mime": "^4.1.0",
+    "structured-headers": "^2.0.2",
+    "uuid": "^13.0.0",
+    "@expo-up/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/uuid": "^11.0.0",
+    "typescript": "5.9.2"
+  }
+}

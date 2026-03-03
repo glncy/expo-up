@@ -1,0 +1,29 @@
+{
+  "name": "@expo-up/core",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm && tsc --emitDeclarationOnly",
+    "dev": "bun build ./src/index.ts --outdir ./dist --target node --format esm --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "prettier --check \"src/**/*.ts\"",
+    "test": "bun test",
+    "quality": "bun run lint && bun run check-types && bun run test"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "5.9.2"
+  }
+}
