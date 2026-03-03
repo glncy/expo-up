@@ -150,6 +150,49 @@ git push
 8. Merge `chore: version packages` PR.
 9. Manually create GitHub **release** (tag) to publish `latest`.
 
+## Example: Prepare `v2.0.0` from current `v1.0.0`
+
+1. Start prerelease stream for the upcoming minor/patch:
+```bash
+bun run pre:enter:next
+git add .changeset/pre.json
+git commit -m "chore: enter next prerelease mode for 2.0.0"
+git push
+```
+2. For each feature/fix PR:
+- add a changeset (`bun run changeset`)
+- merge to `main`
+- CI publishes `2.0.0-next.0`, then `2.0.0-next.1`, `2.0.0-next.2`, and so on.
+3. Test consumers with:
+```bash
+npm i @expo-up/cli@next @expo-up/core@next @expo-up/server@next
+```
+4. When ready for release candidate, switch to RC stream:
+```bash
+bun run pre:enter:rc
+git add .changeset/pre.json
+git commit -m "chore: switch to rc prerelease mode for 2.0.0"
+git push
+```
+5. Create GitHub pre-release(s) to publish `2.0.0-rc.x`.
+6. Finalize stable release:
+```bash
+bun run pre:exit
+git add .changeset/pre.json
+git commit -m "chore: exit prerelease mode for 2.0.0"
+git push
+```
+7. Merge `chore: version packages` PR.
+8. Create GitHub Release with tag `v2.0.0` to publish `latest`.
+
+## When to move from `next` to `rc`
+
+Move to `rc` when all are true:
+- Feature scope for the target version is frozen.
+- No intended breaking/API-shape changes remain.
+- `next` installs are stable across real consumers.
+- Remaining changes are low-risk bug fixes and release polish.
+
 ## Publish authentication
 
 - Uses npm Trusted Publishing (OIDC), not long-lived npm tokens.
