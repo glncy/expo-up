@@ -1,5 +1,13 @@
 # @expo-up/cli
 
+## 0.1.4
+
+### Patch Changes
+
+- 5a9fe87: Import fix
+- Updated dependencies [5a9fe87]
+  - @expo-up/core@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes
