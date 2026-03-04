@@ -1,5 +1,11 @@
 # @expo-up/cli
 
+## 0.1.5
+
+### Patch Changes
+
+- 0887f0e: Fix CLI
+
 ## 0.1.4
 
 ### Patch Changes
