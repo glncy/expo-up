@@ -6,6 +6,10 @@
     "type": "git",
     "url": "https://github.com/glncy/expo-up"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "bin": {
     "expo-up": "dist/index.js"
   },
