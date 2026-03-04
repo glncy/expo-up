@@ -1,5 +1,11 @@
 # @expo-up/core
 
+## 0.1.4
+
+### Patch Changes
+
+- 5a9fe87: Import fix
+
 ## 0.1.3
 
 ### Patch Changes
