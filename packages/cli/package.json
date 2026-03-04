@@ -14,8 +14,8 @@
     "expo-up": "dist/index.js"
   },
   "scripts": {
-    "build": "bun build ./src/index.tsx --outdir ./dist --target node --external react --external ink --external ink-spinner --external figlet",
-    "dev": "bun build ./src/index.tsx --outdir ./dist --target node --watch --external figlet",
+    "build": "bun build ./src/index.tsx --outdir ./dist --target node",
+    "dev": "bun build ./src/index.tsx --outdir ./dist --target node --watch",
     "check-types": "tsc --noEmit",
     "lint": "prettier --check \"src/**/*.{ts,tsx}\"",
     "test": "bun test",
