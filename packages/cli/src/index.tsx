@@ -142,8 +142,8 @@ program
   .command("rollback")
   .description("Rollback to a previous build")
   .option("-c, --channel <channel>", "Override active channel")
-  .option("-t, --to <build>", "Specific build ID")
-  .option("--token <token>", "Use GitHub token directly (CI-friendly)")
+  .option("-b, --to <build>", "Specific build ID")
+  .option("-t, --token <token>", "Use GitHub token directly (CI-friendly)")
   .option("-e, --embedded", "Rollback to native build")
   .action((options) => {
     const channel = options.channel || getStoredChannel() || DEFAULT_CHANNEL;
@@ -172,7 +172,7 @@ program
     "--no-interactive-delete",
     "Disable interactive multi-select delete mode for build history",
   )
-  .option("--token <token>", "Use GitHub token directly (CI-friendly)")
+  .option("-t, --token <token>", "Use GitHub token directly (CI-friendly)")
   .action((options) => {
     const channel = options.channel || getStoredChannel() || DEFAULT_CHANNEL;
     const debug = program.opts().debug;
