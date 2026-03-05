@@ -8,7 +8,7 @@ import { stdin as input, stdout as output } from "node:process";
 import {
   login,
   logout,
-  getStoredToken,
+  resolveGithubToken,
   writeConfig,
   getStoredChannel,
   getAutoConfig,
@@ -62,18 +62,21 @@ program
 program
   .command("list-channels")
   .description("List available channels in your storage repository")
-  .action(() => {
+  .option("-t, --token <token>", "Use GitHub token directly (CI-friendly)")
+  .action((options) => {
     const debug = program.opts().debug;
-    render(<ListChannels debug={debug} />);
+    render(<ListChannels debug={debug} token={options.token} />);
   });
 
 // --- AUTH COMMANDS ---
 program
   .command("login")
   .description("Authenticate with GitHub")
+  .option("-t, --token <token>", "Save GitHub token without OAuth browser flow")
   .action(
-    withCommandErrorBoundary(async () => {
-      await login();
+    withCommandErrorBoundary(async (options: Record<string, unknown>) => {
+      const token = typeof options.token === "string" ? options.token : "";
+      await login(token);
       process.exit(0);
     }),
   );
@@ -90,7 +93,7 @@ program
   .command("whoami")
   .description("Check currently logged in session and project info")
   .action(() => {
-    const token = getStoredToken();
+    const token = resolveGithubToken();
     const { serverUrl, projectId } = getAutoConfig();
     const channel = getStoredChannel();
 
@@ -120,18 +123,27 @@ program
   .description("Bundle and upload an update")
   .option("-p, --platform <platform>", "ios, android, or all", "all")
   .option("-c, --channel <channel>", "Override active channel")
+  .option("-t, --token <token>", "Use GitHub token directly (CI-friendly)")
   .action((options) => {
     const channel = options.channel || getStoredChannel() || DEFAULT_CHANNEL;
     const platform = parsePlatform(options.platform);
     const debug = program.opts().debug;
-    render(<Release channel={channel} platform={platform} debug={debug} />);
+    render(
+      <Release
+        channel={channel}
+        platform={platform}
+        debug={debug}
+        token={options.token}
+      />,
+    );
   });
 
 program
   .command("rollback")
   .description("Rollback to a previous build")
   .option("-c, --channel <channel>", "Override active channel")
-  .option("-t, --to <build>", "Specific build ID")
+  .option("-b, --to <build>", "Specific build ID")
+  .option("-t, --token <token>", "Use GitHub token directly (CI-friendly)")
   .option("-e, --embedded", "Rollback to native build")
   .action((options) => {
     const channel = options.channel || getStoredChannel() || DEFAULT_CHANNEL;
@@ -142,6 +154,7 @@ program
         to={options.to}
         embedded={options.embedded}
         debug={debug}
+        token={options.token}
       />,
     );
   });
@@ -159,6 +172,7 @@ program
     "--no-interactive-delete",
     "Disable interactive multi-select delete mode for build history",
   )
+  .option("-t, --token <token>", "Use GitHub token directly (CI-friendly)")
   .action((options) => {
     const channel = options.channel || getStoredChannel() || DEFAULT_CHANNEL;
     const debug = program.opts().debug;
@@ -169,6 +183,7 @@ program
         deleteBuildIds={options.delete}
         interactiveDelete={options.interactiveDelete}
         yes={options.yes}
+        token={options.token}
       />,
     );
   });

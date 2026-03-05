@@ -2,16 +2,18 @@ import * as React from "react";
 import { Text, Box } from "ink";
 import Spinner from "ink-spinner";
 import { Octokit } from "@octokit/rest";
-import { getStoredToken, getAutoConfig, getStoredChannel } from "./auth";
+import { getAutoConfig, getStoredChannel, resolveGithubToken } from "./auth";
 import { INIT_CHANNEL, parseProjectDescriptor } from "../../core/src/index";
 import { Badge, BrandHeader, CliCard, KV } from "./ui";
 
 interface ListChannelsProps {
   debug?: boolean;
+  token?: string;
 }
 
 export const ListChannels: React.FC<ListChannelsProps> = ({
   debug = false,
+  token,
 }) => {
   const [channels, setChannels] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -23,10 +25,10 @@ export const ListChannels: React.FC<ListChannelsProps> = ({
       try {
         const appendDebug = (message: string): void =>
           setDebugLogs((prev) => [...prev, message]);
-        const token = getStoredToken();
+        const resolvedToken = resolveGithubToken(token);
         const { serverUrl, projectId } = getAutoConfig();
 
-        if (!token || !serverUrl || !projectId)
+        if (!resolvedToken || !serverUrl || !projectId)
           throw new Error("Missing configuration. Are you logged in?");
         if (debug)
           appendDebug(
@@ -38,7 +40,7 @@ export const ListChannels: React.FC<ListChannelsProps> = ({
 
         const { owner, repo } = parseProjectDescriptor(await projRes.json());
 
-        const octokit = new Octokit({ auth: token });
+        const octokit = new Octokit({ auth: resolvedToken });
         const { data: branches } = await octokit.repos.listBranches({
           owner,
           repo,
@@ -60,7 +62,7 @@ export const ListChannels: React.FC<ListChannelsProps> = ({
       }
     };
     run();
-  }, [debug]);
+  }, [debug, token]);
 
   const currentChannel = getStoredChannel();
 

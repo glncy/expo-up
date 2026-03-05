@@ -3,7 +3,7 @@ import { Text, Box, Static } from "ink";
 import Spinner from "ink-spinner";
 import { Octokit } from "@octokit/rest";
 import pc from "picocolors";
-import { getStoredToken, getAutoConfig } from "./auth";
+import { getAutoConfig, resolveGithubToken } from "./auth";
 import {
   EMBEDDED_ROLLBACK_TARGET,
   parseProjectDescriptor,
@@ -17,6 +17,7 @@ interface RollbackProps {
   to?: string;
   embedded?: boolean;
   debug?: boolean;
+  token?: string;
 }
 
 export const Rollback: React.FC<RollbackProps> = ({
@@ -24,6 +25,7 @@ export const Rollback: React.FC<RollbackProps> = ({
   to,
   embedded,
   debug = false,
+  token,
 }) => {
   const [logs, setLogs] = React.useState<string[]>([]);
   const [debugLogs, setDebugLogs] = React.useState<string[]>([]);
@@ -40,17 +42,19 @@ export const Rollback: React.FC<RollbackProps> = ({
           setLogs((prev) => [...prev, message]);
         const appendDebug = (message: string): void =>
           setDebugLogs((prev) => [...prev, message]);
-        const token = getStoredToken();
+        const resolvedToken = resolveGithubToken(token);
         const { serverUrl, projectId, runtimeVersion } = getAutoConfig();
 
-        if (!token || !serverUrl || !projectId || !runtimeVersion)
-          throw new Error("Missing configuration.");
+        if (!resolvedToken || !serverUrl || !projectId || !runtimeVersion)
+          throw new Error(
+            'Missing configuration. Use "login", --token, or EXPO_UP_CLI_GITHUB_TOKEN.',
+          );
         if (debug)
           appendDebug(
             `Resolved config: server=${serverUrl}, project=${projectId}, runtime=${runtimeVersion}`,
           );
 
-        const octokit = new Octokit({ auth: token });
+        const octokit = new Octokit({ auth: resolvedToken });
         setStatus("running");
 
         const projRes = await fetch(`${serverUrl}/projects/${projectId}`);
@@ -190,7 +194,7 @@ export const Rollback: React.FC<RollbackProps> = ({
       }
     };
     run();
-  }, [channel, debug, embedded, to]);
+  }, [channel, debug, embedded, to, token]);
 
   return (
     <Box flexDirection="column" padding={1}>
