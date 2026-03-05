@@ -36,6 +36,9 @@ EXPO_UP_CLI_GITHUB_TOKEN=ghp_xxx expo-up release --channel main --platform all
 
 Authenticate and store local token/config for subsequent commands.
 
+Options:
+- `-t, --token <token>` save token directly (skip OAuth browser flow)
+
 ### `expo-up logout`
 
 Clear locally stored token/config session.
@@ -64,6 +67,9 @@ expo-up set-channel staging
 
 List available channels from the storage repository.
 
+Options:
+- `-t, --token <token>` use GitHub token directly (CI-friendly)
+
 ### `expo-up release`
 
 Build and upload a new OTA build for a channel/runtime.
@@ -71,6 +77,7 @@ Build and upload a new OTA build for a channel/runtime.
 Options:
 - `--platform <ios|android|all>` default: `all`
 - `--channel <name>` optional channel override
+- `-t, --token <token>` use GitHub token directly (CI-friendly)
 - channel defaults to `main` when no saved/override channel is provided
 
 Behavior:
@@ -84,6 +91,7 @@ Examples:
 
 ```bash
 expo-up release --platform all --channel main
+expo-up release -t "$EXPO_UP_CLI_GITHUB_TOKEN" --platform all --channel main
 expo-up --debug release --platform ios --channel feat/new-home
 ```
 
@@ -96,12 +104,14 @@ Options:
 - `--delete <buildIds...>` non-interactive delete mode (CI friendly)
 - `--yes` skip confirmation for delete mode
 - `--no-interactive-delete` disable TUI selection mode
+- `-t, --token <token>` use GitHub token directly (CI-friendly)
 - channel defaults to `main` when no saved/override channel is provided
 
 Examples:
 
 ```bash
 expo-up history --channel main
+expo-up history -t "$EXPO_UP_CLI_GITHUB_TOKEN" --channel main
 expo-up history --channel main --delete 10 11 --yes
 ```
 
@@ -111,7 +121,8 @@ Rollback channel to previous build or embedded app update.
 
 Options:
 - `--channel <name>` optional channel override
-- `--to <buildId>` rollback target build
+- `-b, --to <buildId>` rollback target build
+- `-t, --token <token>` use GitHub token directly (CI-friendly)
 - `--embedded` rollback to embedded/native update
 - channel defaults to `main` when no saved/override channel is provided
 
@@ -119,6 +130,7 @@ Examples:
 
 ```bash
 expo-up rollback --channel main --to 10
+expo-up rollback -t "$EXPO_UP_CLI_GITHUB_TOKEN" --channel main -b 10
 expo-up rollback --channel main --embedded
 ```
 
