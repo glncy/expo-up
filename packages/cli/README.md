@@ -17,6 +17,19 @@ CLI package for managing self-hosted Expo OTA workflows.
 
 - `--debug`: enable verbose logs for API calls, release diffing, and error context.
 
+## CI/CD Token Auth
+
+For non-interactive environments, use:
+- `EXPO_UP_CLI_GITHUB_TOKEN` (recommended)
+- or `--token` per command
+- token must have **write access** to your GitHub storage repository (contents write).
+
+Example:
+
+```bash
+EXPO_UP_CLI_GITHUB_TOKEN=ghp_xxx expo-up release --channel main --platform all
+```
+
 ## Command Reference
 
 ### `expo-up login`

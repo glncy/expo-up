@@ -81,7 +81,13 @@ export function writeConfig(data: Partial<StoredConfig>): void {
   ensureConfigIgnored(EXPO_UP_CONFIG_RELATIVE_PATH);
 }
 
-export async function login() {
+export async function login(token?: string) {
+  if (token?.trim()) {
+    writeConfig({ github_token: token.trim() });
+    console.log(`\n${pc.green("✔")} Token saved.`);
+    return token.trim();
+  }
+
   const { serverUrl } = getAutoConfig();
   if (!serverUrl) throw new Error(`Server URL not found in expo config.`);
 
@@ -123,6 +129,17 @@ export async function login() {
 export function getStoredToken() {
   return readConfig().github_token;
 }
+
+export function resolveGithubToken(token?: string): string | undefined {
+  const explicit = token?.trim();
+  if (explicit) return explicit;
+
+  const envToken = process.env.EXPO_UP_CLI_GITHUB_TOKEN?.trim();
+  if (envToken) return envToken;
+
+  return getStoredToken();
+}
+
 export function getStoredChannel() {
   return readConfig().channel || DEFAULT_CHANNEL;
 }

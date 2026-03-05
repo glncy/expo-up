@@ -2,7 +2,7 @@ import * as React from "react";
 import { Text, Box, useInput } from "ink";
 import Spinner from "ink-spinner";
 import { Octokit } from "@octokit/rest";
-import { getStoredToken, getAutoConfig } from "./auth";
+import { getAutoConfig, resolveGithubToken } from "./auth";
 import {
   EMBEDDED_ROLLBACK_TARGET,
   parseProjectDescriptor,
@@ -16,6 +16,7 @@ interface HistoryProps {
   deleteBuildIds?: string[];
   interactiveDelete?: boolean;
   yes?: boolean;
+  token?: string;
 }
 
 type BuildItem = {
@@ -44,6 +45,7 @@ export const History: React.FC<HistoryProps> = ({
   deleteBuildIds,
   interactiveDelete = true,
   yes = false,
+  token,
 }) => {
   const [items, setItems] = React.useState<BuildItem[]>([]);
   const [status, setStatus] = React.useState<HistoryStatus>("loading");
@@ -94,11 +96,13 @@ export const History: React.FC<HistoryProps> = ({
       setSelectedBuilds(new Set());
       setCursor(0);
 
-      const token = getStoredToken();
+      const resolvedToken = resolveGithubToken(token);
       const { serverUrl, projectId, runtimeVersion } = getAutoConfig();
 
-      if (!token || !serverUrl || !projectId || !runtimeVersion) {
-        throw new Error("Missing configuration. Are you logged in?");
+      if (!resolvedToken || !serverUrl || !projectId || !runtimeVersion) {
+        throw new Error(
+          'Missing configuration. Use "login", --token, or EXPO_UP_CLI_GITHUB_TOKEN.',
+        );
       }
       if (debug) {
         appendDebug(
@@ -106,7 +110,7 @@ export const History: React.FC<HistoryProps> = ({
         );
       }
 
-      const octokit = new Octokit({ auth: token });
+      const octokit = new Octokit({ auth: resolvedToken });
 
       const projRes = await fetch(`${serverUrl}/projects/${projectId}`);
       if (!projRes.ok) throw new Error(`Project "${projectId}" not found.`);
@@ -200,7 +204,7 @@ export const History: React.FC<HistoryProps> = ({
       setStatus("error");
       if (debug) appendDebug(`Failure: ${message}`);
     }
-  }, [appendDebug, channel, debug]);
+  }, [appendDebug, channel, debug, token]);
 
   const deleteBuilds = React.useCallback(
     async (buildIds: number[]) => {

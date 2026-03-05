@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import pc from "picocolors";
 import { spawnSync } from "node:child_process";
-import { getAutoConfig, getStoredToken } from "./auth";
+import { getAutoConfig, resolveGithubToken } from "./auth";
 import { INIT_CHANNEL, parseProjectDescriptor } from "../../core/src/index";
 import { Badge, BrandHeader, CliCard, KV } from "./ui";
 import { PlatformOption } from "./cli-utils";
@@ -24,6 +24,7 @@ interface ReleaseProps {
   channel?: string;
   platform: PlatformOption;
   debug?: boolean;
+  token?: string;
 }
 
 interface GitRefResponse {
@@ -60,6 +61,7 @@ export const Release: React.FC<ReleaseProps> = ({
   channel = "main",
   platform,
   debug = false,
+  token,
 }) => {
   const [status, setStatus] = useState<ReleaseStatus>("idle");
   const [logs, setLogs] = useState<string[]>([]);
@@ -103,8 +105,11 @@ export const Release: React.FC<ReleaseProps> = ({
     const run = async () => {
       try {
         const config = getAutoConfig();
-        const token = getStoredToken();
-        if (!token) throw new Error('Not logged in. Run "login" first.');
+        const resolvedToken = resolveGithubToken(token);
+        if (!resolvedToken)
+          throw new Error(
+            'Missing GitHub token. Use "login", --token, or EXPO_UP_CLI_GITHUB_TOKEN.',
+          );
         if (!config.serverUrl || !config.projectId || !config.runtimeVersion) {
           throw new Error(
             "Missing Expo updates configuration. Check Expo config updates.url and version.",
@@ -118,7 +123,7 @@ export const Release: React.FC<ReleaseProps> = ({
           throw new Error(`Project "${config.projectId}" not found on server.`);
         const { owner, repo } = parseProjectDescriptor(await projectRes.json());
 
-        const octokit = new Octokit({ auth: token });
+        const octokit = new Octokit({ auth: resolvedToken });
 
         setStatus("exporting");
         appendLog(
@@ -456,7 +461,7 @@ export const Release: React.FC<ReleaseProps> = ({
     };
 
     run();
-  }, [channel, platform]);
+  }, [channel, debug, platform, token]);
 
   return (
     <Box flexDirection="column" padding={1}>
