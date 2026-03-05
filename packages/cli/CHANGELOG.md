@@ -1,5 +1,11 @@
 # @expo-up/cli
 
+## 0.1.6
+
+### Patch Changes
+
+- 35f2fa3: Add CI-friendly token auth support (`--token`, `EXPO_UP_CLI_GITHUB_TOKEN`), and improve CLI runtime/package reliability for external projects.
+
 ## 0.1.5
 
 ### Patch Changes
