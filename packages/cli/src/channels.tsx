@@ -2,11 +2,7 @@ import * as React from "react";
 import { Text, Box } from "ink";
 import Spinner from "ink-spinner";
 import { Octokit } from "@octokit/rest";
-import {
-  getAutoConfig,
-  getStoredChannel,
-  resolveGithubToken,
-} from "./auth";
+import { getAutoConfig, getStoredChannel, resolveGithubToken } from "./auth";
 import { INIT_CHANNEL, parseProjectDescriptor } from "../../core/src/index";
 import { Badge, BrandHeader, CliCard, KV } from "./ui";
 
