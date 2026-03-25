@@ -22,3 +22,17 @@ export function parseDeleteBuildIds(values?: string[]): number[] {
 
   return Array.from(new Set(parsed)).sort((a, b) => b - a);
 }
+
+export function shouldAutoExitHistory(options: {
+  interactiveMode: boolean;
+  status: "loading" | "idle" | "deleting" | "success" | "error";
+  hasPendingDeleteConfirmation: boolean;
+}): boolean {
+  const { interactiveMode, status, hasPendingDeleteConfirmation } = options;
+
+  if (interactiveMode || hasPendingDeleteConfirmation) {
+    return false;
+  }
+
+  return status !== "loading" && status !== "deleting";
+}

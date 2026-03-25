@@ -26,6 +26,7 @@ Shared reusable logic used by CLI/server.
 - `@expo-up/cli` depends on `@expo-up/core`.
 
 Publish order:
+
 1. `@expo-up/core`
 2. `@expo-up/server`
 3. `@expo-up/cli`
@@ -130,6 +131,7 @@ expo-up history --channel <name> --delete <ids...> --yes
 
 - View release/rollback timeline.
 - Interactive delete in TTY by default.
+- Prints once and exits automatically in CI/non-TTY environments.
 - CI-safe delete via `--delete` and `--yes`.
 
 ### Rollback
@@ -170,6 +172,7 @@ Default base path in examples: `/api/expo-up`
 ### `GET /api/expo-up/:projectId/manifest`
 
 Headers typically used by Expo client:
+
 - `expo-runtime-version` (required)
 - `expo-platform` (required)
 - `expo-channel-name` (optional)
@@ -178,6 +181,7 @@ Headers typically used by Expo client:
 - `expo-expect-signature` (optional)
 
 Behavior:
+
 - `200` multipart manifest when update is available
 - `200` rollback directive when channel resolves to embedded rollback
 - `204` when already up-to-date
@@ -220,6 +224,7 @@ bun run dev
 ```
 
 Set `.dev.vars`:
+
 - `GITHUB_AUTH_TOKEN`
 - `GITHUB_CLIENT_ID`
 - `GITHUB_CLIENT_SECRET`
@@ -246,6 +251,7 @@ bunx expo-up rollback --channel main --to <build-id>
 ```
 
 In app UI:
+
 - use `Fetch update`
 - use `Channel Surf`
 - verify update details/logs
@@ -269,6 +275,7 @@ bun run release
 Workflow: `.github/workflows/pr-quality.yml`
 
 On every pull request:
+
 1. `build` runs first
 2. `test`, `lint`, and `check-types` run in parallel after build passes
 3. Bun + Turbo caches are restored/saved for faster subsequent runs
@@ -297,6 +304,7 @@ Workflow: `.github/workflows/version-packages.yml`
 - When that PR is merged, package.json versions/changelogs are synced in the repo.
 
 Publish order is always:
+
 1. `@expo-up/core`
 2. `@expo-up/server`
 3. `@expo-up/cli`

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, Box, useInput } from "ink";
+import { Text, Box, useApp, useInput } from "ink";
 import Spinner from "ink-spinner";
 import { Octokit } from "@octokit/rest";
 import { getAutoConfig, resolveGithubToken } from "./auth";
@@ -8,7 +8,7 @@ import {
   parseProjectDescriptor,
 } from "../../core/src/index";
 import { Badge, BrandHeader, CliCard, KV } from "./ui";
-import { parseDeleteBuildIds } from "./history-utils";
+import { parseDeleteBuildIds, shouldAutoExitHistory } from "./history-utils";
 
 interface HistoryProps {
   channel: string;
@@ -47,6 +47,7 @@ export const History: React.FC<HistoryProps> = ({
   yes = false,
   token,
 }) => {
+  const { exit } = useApp();
   const [items, setItems] = React.useState<BuildItem[]>([]);
   const [status, setStatus] = React.useState<HistoryStatus>("loading");
   const [error, setError] = React.useState<string | null>(null);
@@ -62,6 +63,7 @@ export const History: React.FC<HistoryProps> = ({
 
   const ctxRef = React.useRef<HistoryContext | null>(null);
   const autoDeleteTriggeredRef = React.useRef(false);
+  const didExitRef = React.useRef(false);
 
   const parsedAutoDeleteIds = React.useMemo(() => {
     try {
@@ -302,6 +304,25 @@ export const History: React.FC<HistoryProps> = ({
   React.useEffect(() => {
     loadHistory();
   }, [loadHistory]);
+
+  React.useEffect(() => {
+    if (didExitRef.current) {
+      return;
+    }
+
+    if (
+      !shouldAutoExitHistory({
+        interactiveMode,
+        status,
+        hasPendingDeleteConfirmation: Boolean(pendingDeleteIds),
+      })
+    ) {
+      return;
+    }
+
+    didExitRef.current = true;
+    exit(error ? new Error(error) : undefined);
+  }, [error, exit, interactiveMode, pendingDeleteIds, status]);
 
   React.useEffect(() => {
     if (

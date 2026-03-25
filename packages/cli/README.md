@@ -20,6 +20,7 @@ CLI package for managing self-hosted Expo OTA workflows.
 ## CI/CD Token Auth
 
 For non-interactive environments, use:
+
 - `EXPO_UP_CLI_GITHUB_TOKEN` (recommended)
 - or `--token` per command
 - token must have **write access** to your GitHub storage repository (contents write).
@@ -37,6 +38,7 @@ EXPO_UP_CLI_GITHUB_TOKEN=ghp_xxx expo-up release --channel main --platform all
 Authenticate and store local token/config for subsequent commands.
 
 Options:
+
 - `-t, --token <token>` save token directly (skip OAuth browser flow)
 
 ### `expo-up logout`
@@ -46,6 +48,7 @@ Clear locally stored token/config session.
 ### `expo-up whoami`
 
 Print resolved project context:
+
 - projectId from Expo config
 - active channel
 - server URL
@@ -68,6 +71,7 @@ expo-up set-channel staging
 List available channels from the storage repository.
 
 Options:
+
 - `-t, --token <token>` use GitHub token directly (CI-friendly)
 
 ### `expo-up release`
@@ -75,12 +79,14 @@ Options:
 Build and upload a new OTA build for a channel/runtime.
 
 Options:
+
 - `--platform <ios|android|all>` default: `all`
 - `--channel <name>` optional channel override
 - `-t, --token <token>` use GitHub token directly (CI-friendly)
 - channel defaults to `main` when no saved/override channel is provided
 
 Behavior:
+
 1. Runs `expo export`.
 2. Reads local `dist/metadata.json`.
 3. Compares sorted metadata hash against latest remote build in the channel.
@@ -99,7 +105,13 @@ expo-up --debug release --platform ios --channel feat/new-home
 
 Show release/rollback timeline for a channel.
 
+Behavior:
+
+- local TTY: interactive history view with multi-select delete shortcuts
+- CI/non-TTY: prints the history once and exits automatically
+
 Options:
+
 - `--channel <name>` optional channel override
 - `--delete <buildIds...>` non-interactive delete mode (CI friendly)
 - `--yes` skip confirmation for delete mode
@@ -112,6 +124,7 @@ Examples:
 ```bash
 expo-up history --channel main
 expo-up history -t "$EXPO_UP_CLI_GITHUB_TOKEN" --channel main
+CI=true expo-up history -t "$EXPO_UP_CLI_GITHUB_TOKEN" --channel main
 expo-up history --channel main --delete 10 11 --yes
 ```
 
@@ -120,6 +133,7 @@ expo-up history --channel main --delete 10 11 --yes
 Rollback channel to previous build or embedded app update.
 
 Options:
+
 - `--channel <name>` optional channel override
 - `-b, --to <buildId>` rollback target build
 - `-t, --token <token>` use GitHub token directly (CI-friendly)
@@ -139,6 +153,7 @@ expo-up rollback --channel main --embedded
 Generate keypair/certificate and update Expo config for signed updates.
 
 Key options:
+
 - `--organization <name>`
 - `--certificate-validity-duration-years <years>`
 - `--key-id <id>` default: `main`
