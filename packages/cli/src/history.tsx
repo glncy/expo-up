@@ -321,8 +321,7 @@ export const History: React.FC<HistoryProps> = ({
     }
 
     didExitRef.current = true;
-    process.exitCode = error ? 1 : 0;
-    exit();
+    exit(error ? new Error(error) : undefined);
   }, [error, exit, interactiveMode, pendingDeleteIds, status]);
 
   React.useEffect(() => {
