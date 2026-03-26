@@ -1,5 +1,11 @@
 # @expo-up/cli
 
+## 0.1.7
+
+### Patch Changes
+
+- e4d7e0d: Fix `expo-up history` so it exits cleanly in CI and non-interactive environments after printing results, while keeping the local interactive TUI behavior.
+
 ## 0.1.6
 
 ### Patch Changes
